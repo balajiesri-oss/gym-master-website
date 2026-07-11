@@ -10,6 +10,37 @@ function category(bmi: number) {
   return "Obese";
 }
 
+function categoryColor(bmi: number) {
+  if (bmi < 18.5)
+    return {
+      text: "text-sky-400",
+      bg: "bg-sky-400",
+      border: "border-sky-400/30",
+    };
+  if (bmi < 25)
+    return {
+      text: "text-emerald-400",
+      bg: "bg-emerald-400",
+      border: "border-emerald-400/30",
+    };
+  if (bmi < 30)
+    return {
+      text: "text-amber-400",
+      bg: "bg-amber-400",
+      border: "border-amber-400/30",
+    };
+  return {
+    text: "text-rose-400",
+    bg: "bg-rose-400",
+    border: "border-rose-400/30",
+  };
+}
+
+function gaugePercent(bmi: number) {
+  const clamped = Math.min(Math.max(bmi, 15), 40);
+  return ((clamped - 15) / (40 - 15)) * 100;
+}
+
 export function BMICalculator() {
   const [height, setHeight] = useState(175);
   const [weight, setWeight] = useState(78);
@@ -102,9 +133,28 @@ export function BMICalculator() {
               <span className="text-glow font-display text-6xl text-neon">
                 {rounded}
               </span>
-              <span className="rounded-full border border-neon/30 bg-neon/10 px-4 py-1 text-sm font-semibold text-neon">
+              <span
+                className={`rounded-full border ${categoryColor(rounded).border} px-4 py-1 text-sm font-semibold ${categoryColor(rounded).text}`}
+              >
                 {category(rounded)}
               </span>
+
+              <div className="mt-4 w-full">
+                <div className="relative h-2 w-full overflow-hidden rounded-full bg-zinc-800">
+                  <div className="absolute inset-y-0 left-0 w-full rounded-full bg-gradient-to-r from-sky-400 via-emerald-400 via-amber-400 to-rose-400 opacity-30" />
+                  <div
+                    className={`absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full ${categoryColor(rounded).bg} shadow-lg ring-2 ring-white/50 transition-all duration-500`}
+                    style={{ left: `calc(${gaugePercent(rounded)}% - 8px)` }}
+                  />
+                </div>
+                <div className="mt-1 flex justify-between text-[10px] uppercase tracking-wide text-zinc-500">
+                  <span>15</span>
+                  <span>18.5</span>
+                  <span>25</span>
+                  <span>30</span>
+                  <span>40</span>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
